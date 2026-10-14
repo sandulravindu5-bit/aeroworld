@@ -1,0 +1,960 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#071426">
+<title>AeroWorld 4.0 | Aviation Explorer</title>
+
+<style>
+:root {
+  --bg:#071426;
+  --panel:#10233c;
+  --panel2:#162d49;
+  --text:#edf5ff;
+  --muted:#a9bdd4;
+  --accent:#36c5f0;
+  --accent2:#6f8cff;
+  --border:#29415e;
+}
+body.light {
+  --bg:#eef4fa;
+  --panel:#ffffff;
+  --panel2:#e4edf7;
+  --text:#15283d;
+  --muted:#52677e;
+  --accent:#007eae;
+  --accent2:#405ad6;
+  --border:#c8d6e5;
+}
+* {box-sizing:border-box}
+html {scroll-behavior:smooth;scroll-padding-top:90px}
+body {
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;line-height:1.65;
+  transition:background .25s,color .25s
+}
+button,input,select {font:inherit}
+button {cursor:pointer}
+a {color:var(--accent);text-decoration:none}
+a:hover {text-decoration:underline}
+header {
+  position:sticky;top:0;z-index:100;
+  background:var(--panel);border-bottom:1px solid var(--border)
+}
+.nav {
+  max-width:1250px;margin:auto;padding:12px 20px;
+  display:flex;align-items:center;justify-content:space-between;gap:18px
+}
+.brand {font-size:1.35rem;font-weight:900;white-space:nowrap}
+.brand span {color:var(--accent)}
+nav {display:flex;gap:15px;flex-wrap:wrap;align-items:center}
+nav a {color:var(--text);font-size:.9rem}
+button,.btn {
+  border:1px solid var(--border);border-radius:9px;
+  padding:9px 13px;background:var(--panel2);color:var(--text)
+}
+button:hover,.btn:hover {border-color:var(--accent)}
+button:disabled {opacity:.4;cursor:not-allowed}
+.primary {background:var(--accent);color:#041321;font-weight:bold;border:0}
+.container {max-width:1250px;margin:auto;padding:28px 20px}
+.hero {
+  padding:65px 24px;border:1px solid var(--border);border-radius:22px;
+  background:radial-gradient(ellipse at 80% 10%,#17638a 0%,transparent 45%),
+  linear-gradient(135deg,#071426,#132c4a);
+  color:#fff;overflow:hidden
+}
+.hero h1 {font-size:clamp(2.3rem,6vw,4.6rem);line-height:1.08;margin:12px 0}
+.hero p {max-width:720px;color:#d4e5f7;font-size:1.1rem}
+.eyebrow {color:#67defb;font-weight:bold;letter-spacing:2px;text-transform:uppercase}
+.hero-actions {display:flex;gap:10px;flex-wrap:wrap;margin-top:25px}
+.hero .btn {background:#eaf8ff;color:#0a2339;border:0;font-weight:bold}
+.stats {
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;margin-top:18px
+}
+.stat {background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px}
+.stat strong {font-size:1.5rem;color:var(--accent);display:block}
+.section {margin-top:58px}
+.section-heading {margin-bottom:20px}
+.section-heading h2 {font-size:clamp(1.6rem,4vw,2.3rem);margin:0 0 5px}
+.section-heading p,.muted,.small {color:var(--muted)}
+.small {font-size:.85rem}
+.controls {display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
+input,select {
+  background:var(--panel);color:var(--text);
+  border:1px solid var(--border);border-radius:9px;padding:11px
+}
+input {flex:1;min-width:180px}
+.grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+.card {
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:15px;overflow:hidden;min-width:0
+}
+.card-content {padding:16px}
+.card h3 {margin:0 0 7px}
+.aircraft-image {
+  width:100%;height:185px;object-fit:cover;display:block;background:var(--panel2)
+}
+.image-fallback {
+  height:185px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--panel2),var(--bg));
+  font-size:3.5rem
+}
+.tag {
+  display:inline-block;background:var(--panel2);color:var(--accent);
+  border-radius:20px;padding:4px 10px;font-size:.78rem;margin-bottom:9px
+}
+.card-actions {display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.card-actions button {font-size:.85rem}
+.theory-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.theory-card {
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:14px;padding:19px
+}
+.theory-card h3 {margin-top:0}
+.theory-card p {color:var(--muted)}
+.note {
+  background:var(--panel2);border-left:4px solid var(--accent);
+  border-radius:8px;padding:17px;margin-top:17px
+}
+.split {display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.instrument-display {
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;
+  margin-top:18px
+}
+.gauge {
+  min-height:130px;display:flex;flex-direction:column;justify-content:center;
+  align-items:center;text-align:center;border:2px solid #8298ae;
+  border-radius:50%;aspect-ratio:1;background:#0c1929;color:#fff;padding:8px
+}
+.gauge .symbol {font-size:2rem}
+.gauge strong {font-size:.9rem}
+.gauge span {font-size:.75rem;color:#bcd0e5}
+.quiz-option {
+  display:block;width:100%;text-align:left;margin:9px 0;
+  border:1px solid var(--border);background:var(--panel2);
+  padding:12px;border-radius:9px;color:var(--text)
+}
+.quiz-option.correct {border-color:#32bd84;background:#14533e}
+.quiz-option.wrong {border-color:#f47e7e;background:#622b35}
+#quizFeedback {margin-top:12px}
+footer {
+  border-top:1px solid var(--border);text-align:center;
+  padding:28px 18px;color:var(--muted);margin-top:50px
+}
+[hidden] {display:none!important}
+@media(max-width:900px) {
+  .grid,.theory-grid {grid-template-columns:repeat(2,minmax(0,1fr))}
+  .nav {align-items:flex-start;flex-direction:column}
+  nav {gap:12px}
+}
+@media(max-width:600px) {
+  .grid,.theory-grid,.split {grid-template-columns:1fr}
+  .stats {grid-template-columns:repeat(2,minmax(0,1fr))}
+  .instrument-display {grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hero {padding:38px 20px}
+  .container {padding:20px 14px}
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="nav">
+    <a class="brand" href="#home">✈ Aero<span>World</span> 4.0</a>
+    <nav aria-label="Main navigation">
+      <a href="#aircraft">Aircraft</a>
+      <a href="#theory">Flight Theory</a>
+      <a href="#cockpit">Cockpit</a>
+      <a href="#engineering">Engineering</a>
+      <a href="#operations">Operations</a>
+      <a href="#quiz">Quiz</a>
+      <button id="themeToggle" type="button" aria-label="Toggle theme">☀️ / 🌙</button>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+<section class="hero" id="home">
+  <div class="eyebrow">Your aviation adventure starts here</div>
+  <h1>Explore the World<br>of Aviation.</h1>
+  <p>
+    Discover legendary aircraft, explore the science of flight,
+    learn cockpit instruments and investigate the engineering behind
+    the machines that conquer the skies.
+  </p>
+  <div class="hero-actions">
+    <a class="btn" href="#aircraft">Explore Aircraft →</a>
+    <a class="btn" href="#cockpit">Enter the Cockpit →</a>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="stat"><strong id="aircraftCount">40+</strong>Aircraft profiles</div>
+  <div class="stat"><strong>6</strong>Learning areas</div>
+  <div class="stat"><strong>8</strong>Flight stages</div>
+  <div class="stat"><strong>10</strong>Quiz questions</div>
+</div>
+
+<!-- AIRCRAFT ENCYCLOPEDIA -->
+<section class="section" id="aircraft">
+  <div class="section-heading">
+    <h2>🛩️ Aircraft Encyclopedia</h2>
+    <p>Search aircraft, explore categories and save your favorites.</p>
+  </div>
+  <div class="controls">
+    <input id="aircraftSearch" type="search" placeholder="Search aircraft or manufacturer..." aria-label="Search aircraft">
+    <select id="categoryFilter" aria-label="Filter by category">
+      <option value="All">All categories</option>
+      <option>Airliner</option>
+      <option>Fighter</option>
+      <option>Trainer</option>
+      <option>Transport</option>
+      <option>Helicopter</option>
+      <option>General Aviation</option>
+      <option>Business Jet</option>
+      <option>Glider</option>
+      <option>Special</option>
+    </select>
+    <button id="favoritesFilter" type="button">☆ Favorites only</button>
+  </div>
+  <p class="small" id="resultsCount" aria-live="polite"></p>
+  <div class="grid" id="aircraftGrid"></div>
+</section>
+
+<!-- FLIGHT THEORY -->
+<section class="section" id="theory">
+  <div class="section-heading">
+    <h2>📘 Flight Theory Academy</h2>
+    <p>Learn the science behind flight, from aerodynamics to navigation.</p>
+  </div>
+  <div class="theory-grid">
+    <article class="theory-card">
+      <h3>🛫 Four Forces of Flight</h3>
+      <p><b>Lift:</b> aerodynamic force that acts generally upward relative to the aircraft.</p>
+      <p><b>Weight:</b> the force of gravity acting on the aircraft.</p>
+      <p><b>Thrust:</b> force produced by the propulsion system.</p>
+      <p><b>Drag:</b> aerodynamic resistance opposing motion through the air.</p>
+    </article>
+    <article class="theory-card">
+      <h3>🌬️ How Wings Create Lift</h3>
+      <p>Lift depends on air density, airspeed, wing area and lift coefficient.
+      Wing shape and angle of attack affect airflow and pressure distribution.</p>
+      <div class="note">Lift equation: L = ½ ρ V² S Cₗ</div>
+      <p class="small">Here, ρ is air density, V is airspeed, S is wing area and Cₗ is lift coefficient.</p>
+    </article>
+    <article class="theory-card">
+      <h3>⚠️ Stalls and Angle of Attack</h3>
+      <p>A stall occurs when a wing exceeds its critical angle of attack.
+      It can occur at many airspeeds, not only at a particular low speed.</p>
+      <p>Stall awareness and recovery procedures depend on aircraft type and approved training.</p>
+    </article>
+    <article class="theory-card">
+      <h3>🎮 Flight Controls</h3>
+      <p><b>Ailerons:</b> primarily control roll.</p>
+      <p><b>Elevator:</b> controls pitch in conventional designs.</p>
+      <p><b>Rudder:</b> controls yaw.</p>
+      <p><b>Flaps:</b> increase lift and drag for take-off and landing configurations.</p>
+    </article>
+    <article class="theory-card">
+      <h3>⚙️ Engines and Propulsion</h3>
+      <p>Turbofans are common on airliners. Turboprops drive a propeller using a turbine.
+      Piston engines are common in light aircraft, while rockets carry their own oxidizer.</p>
+    </article>
+    <article class="theory-card">
+      <h3>🌦️ Weather and Navigation</h3>
+      <p>Pilots consider wind, visibility, clouds, turbulence, icing and storms.
+      Navigation may use GNSS, radio aids, inertial systems, charts and approved procedures.</p>
+    </article>
+    <article class="theory-card">
+      <h3>⚖️ Weight and Balance</h3>
+      <p>Aircraft mass and centre of gravity affect stability, control and performance.
+      Operators calculate loading within approved limits.</p>
+    </article>
+    <article class="theory-card">
+      <h3>🛩️ Stability and Trim</h3>
+      <p>Stability describes how an aircraft responds after a disturbance.
+      Trim reduces the sustained control force needed in a particular flight condition.</p>
+    </article>
+    <article class="theory-card">
+      <h3>📟 Flight Instruments</h3>
+      <p>Airspeed, altitude, attitude, heading and vertical speed are important
+      indications. Modern aircraft may integrate them into electronic displays.</p>
+    </article>
+  </div>
+</section>
+
+<!-- INTERACTIVE COCKPIT -->
+<section class="section" id="cockpit">
+  <div class="section-heading">
+    <h2>🛫 Interactive Cockpit</h2>
+    <p>Select an instrument to learn what it does.</p>
+  </div>
+  <div class="split">
+    <div class="theory-card">
+      <h3>Instrument Panel</h3>
+      <div class="instrument-display">
+        <button class="gauge cockpit-btn" data-instrument="airspeed">
+          <span class="symbol">◉</span><strong>Airspeed</strong><span>Speed through air</span>
+        </button>
+        <button class="gauge cockpit-btn" data-instrument="altimeter">
+          <span class="symbol">↟</span><strong>Altimeter</strong><span>Altitude</span>
+        </button>
+        <button class="gauge cockpit-btn" data-instrument="attitude">
+          <span class="symbol">🌅</span><strong>Attitude</strong><span>Pitch and bank</span>
+        </button>
+        <button class="gauge cockpit-btn" data-instrument="heading">
+          <span class="symbol">🧭</span><strong>Heading</strong><span>Direction</span>
+        </button>
+        <button class="gauge cockpit-btn" data-instrument="vertical">
+          <span class="symbol">↕</span><strong>Vertical Speed</strong><span>Climb or descent</span>
+        </button>
+        <button class="gauge cockpit-btn" data-instrument="engine">
+          <span class="symbol">⚙️</span><strong>Engine</strong><span>Engine parameters</span>
+        </button>
+      </div>
+    </div>
+    <article class="theory-card">
+      <span class="tag">INSTRUMENT GUIDE</span>
+      <h3 id="cockpitTitle">Welcome to the cockpit</h3>
+      <p id="cockpitInfo">Choose an instrument on the panel to read its explanation.</p>
+      <div class="note">This is an educational display. It does not simulate real flight data or control a real aircraft.</div>
+    </article>
+  </div>
+</section>
+
+<!-- ENGINEERING LAB -->
+<section class="section" id="engineering">
+  <div class="section-heading">
+    <h2>⚙️ Aircraft Engineering Lab</h2>
+    <p>Explore the systems that make aircraft fly.</p>
+  </div>
+  <div class="grid">
+    <button class="theory-card engineering-btn" data-system="engine" type="button">
+      <h3>🌪️ Jet Engines</h3><p>Discover how turbofans produce thrust.</p>
+    </button>
+    <button class="theory-card engineering-btn" data-system="wing" type="button">
+      <h3>🪽 Wings</h3><p>Explore lift, wing shape and high-lift devices.</p>
+    </button>
+    <button class="theory-card engineering-btn" data-system="gear" type="button">
+      <h3>🛞 Landing Gear</h3><p>Learn about wheels, struts and retraction.</p>
+    </button>
+    <button class="theory-card engineering-btn" data-system="controls" type="button">
+      <h3>🎮 Flight Controls</h3><p>Explore control surfaces and fly-by-wire.</p>
+    </button>
+    <button class="theory-card engineering-btn" data-system="fuel" type="button">
+      <h3>⛽ Fuel System</h3><p>Discover aircraft fuel storage and delivery.</p>
+    </button>
+    <button class="theory-card engineering-btn" data-system="hydraulic" type="button">
+      <h3>🔧 Hydraulics</h3><p>Learn how pressurized fluid transfers power.</p>
+    </button>
+  </div>
+  <article class="theory-card" style="margin-top:17px">
+    <span class="tag">ENGINEERING EXPLORER</span>
+    <h3 id="engineeringTitle">Select an aircraft system</h3>
+    <p id="engineeringInfo">Choose any system above to explore its purpose and main principles.</p>
+  </article>
+</section>
+
+<!-- AIRLINE OPERATIONS -->
+<section class="section" id="operations">
+  <div class="section-heading">
+    <h2>🌍 Airline Operations</h2>
+    <p>Follow a typical airline journey from flight planning to arrival.</p>
+  </div>
+  <div class="controls" id="stageButtons">
+    <button class="operation-btn" data-stage="0">1. Planning</button>
+    <button class="operation-btn" data-stage="1">2. Pre-flight</button>
+    <button class="operation-btn" data-stage="2">3. Taxi</button>
+    <button class="operation-btn" data-stage="3">4. Take-off</button>
+    <button class="operation-btn" data-stage="4">5. Cruise</button>
+    <button class="operation-btn" data-stage="5">6. Descent</button>
+    <button class="operation-btn" data-stage="6">7. Landing</button>
+    <button class="operation-btn" data-stage="7">8. Post-flight</button>
+  </div>
+  <article class="theory-card">
+    <span class="tag" id="operationNumber">STAGE 1 OF 8</span>
+    <h3 id="operationTitle">Flight Planning</h3>
+    <p id="operationInfo">The crew and dispatch team consider route, weather, fuel, aircraft performance and alternate airports.</p>
+    <div class="controls">
+      <button id="previousStage" type="button">← Previous</button>
+      <button class="primary" id="nextStage" type="button">Next Stage →</button>
+    </div>
+  </article>
+  <p class="small">This is a simplified learning guide, not an operational checklist. Real flights follow approved procedures and clearances.</p>
+</section>
+
+<!-- AVIATION QUIZ -->
+<section class="section" id="quiz">
+  <div class="section-heading">
+    <h2>🧠 Aviation Knowledge Quiz</h2>
+    <p>Test your aviation knowledge with ten questions.</p>
+  </div>
+  <article class="theory-card">
+    <div class="controls" style="justify-content:space-between">
+      <span class="tag" id="quizProgress">QUESTION 1 OF 10</span>
+      <strong id="quizScore">Score: 0</strong>
+    </div>
+    <h3 id="quizQuestion">Loading question...</h3>
+    <div id="quizOptions"></div>
+    <p id="quizFeedback" aria-live="polite"></p>
+    <div class="controls">
+      <button class="primary" id="quizNext" type="button" disabled>Next Question →</button>
+      <button id="quizRestart" type="button" hidden>Try Again ↻</button>
+    </div>
+  </article>
+</section>
+
+<section class="section">
+  <div class="note">
+    <h3>✈️ Keep Exploring</h3>
+    <p>Aviation combines science, engineering, teamwork and careful planning.
+    Keep learning from reliable aviation references and qualified instructors.</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <strong>✈ AeroWorld 4.0</strong>
+  <p>Built for aviation enthusiasts. Learn, explore and reach for the skies.</p>
+  <p class="small">Independent educational project. Not affiliated with any aircraft manufacturer or airline.</p>
+</footer>
+
+<script>
+// ================================
+// AIRCRAFT ENCYCLOPEDIA
+// ================================
+const aircraft = [
+  {name:"Airbus A380",maker:"Airbus",category:"Airliner",year:"2005",description:"The world's largest passenger airliner, with two full passenger decks.",wiki:"Airbus_A380"},
+  {name:"Airbus A350",maker:"Airbus",category:"Airliner",year:"2013",description:"A long-range widebody featuring extensive composite construction.",wiki:"Airbus_A350"},
+  {name:"Airbus A330",maker:"Airbus",category:"Airliner",year:"1992",description:"A versatile twin-engine widebody used on regional and long-haul routes.",wiki:"Airbus_A330"},
+  {name:"Airbus A320",maker:"Airbus",category:"Airliner",year:"1987",description:"A popular narrowbody family used around the world.",wiki:"Airbus_A320_family"},
+  {name:"Airbus A220",maker:"Airbus",category:"Airliner",year:"2013",description:"An efficient narrowbody designed for smaller passenger markets.",wiki:"Airbus_A220"},
+  {name:"Boeing 747",maker:"Boeing",category:"Airliner",year:"1969",description:"The iconic jumbo jet recognizable by its upper-deck hump.",wiki:"Boeing_747"},
+  {name:"Boeing 777",maker:"Boeing",category:"Airliner",year:"1994",description:"A large twin-engine widebody built for long-range operations.",wiki:"Boeing_777"},
+  {name:"Boeing 787 Dreamliner",maker:"Boeing",category:"Airliner",year:"2009",description:"A modern widebody with composite structures and advanced systems.",wiki:"Boeing_787_Dreamliner"},
+  {name:"Boeing 737",maker:"Boeing",category:"Airliner",year:"1967",description:"One of the most widely used commercial jet families.",wiki:"Boeing_737"},
+  {name:"Concorde",maker:"Aérospatiale / BAC",category:"Airliner",year:"1969",description:"A supersonic passenger aircraft that entered airline service in 1976.",wiki:"Concorde"},
+  {name:"Embraer E195-E2",maker:"Embraer",category:"Airliner",year:"2017",description:"A modern regional jet with a spacious single-aisle cabin.",wiki:"Embraer_E-Jet_E2_family"},
+  {name:"ATR 72",maker:"ATR",category:"Airliner",year:"1988",description:"A twin-engine turboprop popular on regional routes.",wiki:"ATR_72"},
+  {name:"F-22 Raptor",maker:"Lockheed Martin",category:"Fighter",year:"1997",description:"A stealth air-superiority fighter with supercruise capability.",wiki:"Lockheed_Martin_F-22_Raptor"},
+  {name:"F-35 Lightning II",maker:"Lockheed Martin",category:"Fighter",year:"2006",description:"A family of stealth multirole combat aircraft.",wiki:"Lockheed_Martin_F-35_Lightning_II"},
+  {name:"F-16 Fighting Falcon",maker:"General Dynamics / Lockheed Martin",category:"Fighter",year:"1974",description:"A lightweight multirole fighter operated by many air forces.",wiki:"General_Dynamics_F-16_Fighting_Falcon"},
+  {name:"F-15 Eagle",maker:"McDonnell Douglas / Boeing",category:"Fighter",year:"1972",description:"A powerful twin-engine fighter designed for air superiority.",wiki:"McDonnell_Douglas_F-15_Eagle"},
+  {name:"F/A-18 Hornet",maker:"McDonnell Douglas / Boeing",category:"Fighter",year:"1978",description:"A carrier-capable multirole combat aircraft.",wiki:"McDonnell_Douglas_F-A-18_Hornet"},
+  {name:"Eurofighter Typhoon",maker:"Eurofighter",category:"Fighter",year:"1994",description:"A European twin-engine delta-wing multirole fighter.",wiki:"Eurofighter_Typhoon"},
+  {name:"Dassault Rafale",maker:"Dassault Aviation",category:"Fighter",year:"1986",description:"A French multirole fighter with a delta wing and canards.",wiki:"Dassault_Rafale"},
+  {name:"Saab JAS 39 Gripen",maker:"Saab",category:"Fighter",year:"1988",description:"A Swedish multirole fighter designed for flexible operations.",wiki:"Saab_JAS_39_Gripen"},
+  {name:"MiG-29",maker:"Mikoyan",category:"Fighter",year:"1977",description:"A twin-engine fighter developed in the Soviet Union.",wiki:"Mikoyan_MiG-29"},
+  {name:"MiG-25 Foxbat",maker:"Mikoyan",category:"Fighter",year:"1964",description:"A high-speed interceptor and reconnaissance aircraft.",wiki:"Mikoyan-Gurevich_MiG-25"},
+  {name:"Su-27 Flanker",maker:"Sukhoi",category:"Fighter",year:"1977",description:"A large twin-engine fighter with excellent aerodynamic performance.",wiki:"Sukhoi_Su-27"},
+  {name:"Chengdu J-20",maker:"Chengdu Aerospace",category:"Fighter",year:"2011",description:"A Chinese stealth fighter with a long-range design.",wiki:"Chengdu_J-20"},
+  {name:"Su-57",maker:"Sukhoi",category:"Fighter",year:"2010",description:"A Russian stealth-oriented multirole fighter.",wiki:"Sukhoi_Su-57"},
+  {name:"Cessna 172",maker:"Cessna",category:"Trainer",year:"1955",description:"A widely used light aircraft for flight training and touring.",wiki:"Cessna_172"},
+  {name:"Piper J-3 Cub",maker:"Piper Aircraft",category:"Trainer",year:"1938",description:"A classic light aircraft known for its simple design.",wiki:"Piper_J-3_Cub"},
+  {name:"Pilatus PC-21",maker:"Pilatus",category:"Trainer",year:"2002",description:"A turboprop trainer used for advanced pilot training.",wiki:"Pilatus_PC-21"},
+  {name:"Beechcraft T-6 Texan II",maker:"Beechcraft",category:"Trainer",year:"1998",description:"A turboprop military trainer.",wiki:"Beechcraft_T-6_Texan_II"},
+  {name:"Aero L-39 Albatros",maker:"Aero Vodochody",category:"Trainer",year:"1968",description:"A jet trainer also known for aerobatic and display flying.",wiki:"Aero_L-39_Albatros"},
+  {name:"Spitfire",maker:"Supermarine",category:"Fighter",year:"1936",description:"A famous British fighter of the Second World War.",wiki:"Supermarine_Spitfire"},
+  {name:"C-130 Hercules",maker:"Lockheed",category:"Transport",year:"1954",description:"A rugged tactical airlifter capable of using many shorter airfields.",wiki:"Lockheed_C-130_Hercules"},
+  {name:"Airbus A400M",maker:"Airbus",category:"Transport",year:"2009",description:"A military transport powered by four turboprop engines.",wiki:"Airbus_A400M_Atlas"},
+  {name:"C-17 Globemaster III",maker:"Boeing",category:"Transport",year:"1991",description:"A strategic and tactical military transport aircraft.",wiki:"Boeing_C-17_Globemaster_III"},
+  {name:"Antonov An-124",maker:"Antonov",category:"Transport",year:"1982",description:"A very large strategic cargo aircraft.",wiki:"Antonov_An-124"},
+  {name:"Boeing 747-8F",maker:"Boeing",category:"Transport",year:"2010",description:"A freighter variant of the 747-8 family.",wiki:"Boeing_747-8"},
+  {name:"Bell 206",maker:"Bell Helicopter",category:"Helicopter",year:"1962",description:"A light helicopter used for transport, training and utility missions.",wiki:"Bell_206"},
+  {name:"Robinson R44",maker:"Robinson Helicopter Company",category:"Helicopter",year:"1990",description:"A light four-seat helicopter used for training and private flying.",wiki:"Robinson_R44"},
+  {name:"Airbus H125",maker:"Airbus Helicopters",category:"Helicopter",year:"1975",description:"A single-engine helicopter used for utility and high-altitude missions.",wiki:"Eurocopter_AS350_Écureuil"},
+  {name:"UH-60 Black Hawk",maker:"Sikorsky",category:"Helicopter",year:"1974",description:"A military utility helicopter used for transport and other missions.",wiki:"Sikorsky_UH-60_Black_Hawk"},
+  {name:"CH-47 Chinook",maker:"Boeing",category:"Helicopter",year:"1961",description:"A heavy-lift helicopter with tandem rotors.",wiki:"Boeing_CH-47_Chinook"},
+  {name:"Cirrus SR22",maker:"Cirrus Aircraft",category:"General Aviation",year:"2000",description:"A high-performance single-engine aircraft with modern avionics.",wiki:"Cirrus_SR22"},
+  {name:"Diamond DA40",maker:"Diamond Aircraft",category:"General Aviation",year:"1997",description:"A modern light aircraft often used for training and touring.",wiki:"Diamond_DA40"},
+  {name:"Gulfstream G650",maker:"Gulfstream Aerospace",category:"Business Jet",year:"2009",description:"An ultra-long-range business jet.",wiki:"Gulfstream_G650"},
+  {name:"Bombardier Global 7500",maker:"Bombardier",category:"Business Jet",year:"2016",description:"An ultra-long-range business aircraft with a large cabin.",wiki:"Bombardier_Global_7500"},
+  {name:"ASK 21",maker:"Alexander Schleicher",category:"Glider",year:"1978",description:"A two-seat glider widely used for training.",wiki:"Schleicher_ASK_21"},
+  {name:"Northrop Grumman B-2 Spirit",maker:"Northrop Grumman",category:"Special",year:"1989",description:"A flying-wing stealth bomber.",wiki:"Northrop_Grumman_B-2_Spirit"},
+  {name:"NASA X-15",maker:"North American Aviation",category:"Special",year:"1959",description:"A rocket-powered research aircraft that explored hypersonic flight.",wiki:"North_American_X-15"},
+  {name:"Canadair CL-415",maker:"Canadair / Bombardier",category:"Special",year:"1993",description:"An amphibious aircraft designed for firefighting missions.",wiki:"Canadair_CL-415"}
+];
+
+const grid = document.getElementById("aircraftGrid");
+const searchInput = document.getElementById("aircraftSearch");
+const categoryFilter = document.getElementById("categoryFilter");
+const favoritesButton = document.getElementById("favoritesFilter");
+
+let favorites = new Set();
+try {
+  favorites = new Set(JSON.parse(localStorage.getItem("aeroworld-favorites") || "[]"));
+} catch (error) {
+  favorites = new Set();
+}
+let onlyFavorites = false;
+const imageCache = new Map();
+
+document.getElementById("aircraftCount").textContent = aircraft.length + "+";
+
+function saveFavorites() {
+  try {
+    localStorage.setItem("aeroworld-favorites", JSON.stringify([...favorites]));
+  } catch (error) {
+    // Favorites still work for this page session if storage is unavailable.
+  }
+}
+
+function createAircraftCard(plane) {
+  const card = document.createElement("article");
+  card.className = "card";
+
+  const media = document.createElement("div");
+  const image = document.createElement("img");
+  image.className = "aircraft-image";
+  image.alt = plane.name;
+  image.loading = "lazy";
+  image.referrerPolicy = "no-referrer";
+
+  const fallback = document.createElement("div");
+  fallback.className = "image-fallback";
+  fallback.textContent = "✈️";
+  fallback.hidden = true;
+
+  media.append(image, fallback);
+  card.appendChild(media);
+
+  const content = document.createElement("div");
+  content.className = "card-content";
+
+  const tag = document.createElement("span");
+  tag.className = "tag";
+  tag.textContent = plane.category;
+
+  const title = document.createElement("h3");
+  title.textContent = plane.name;
+
+  const maker = document.createElement("p");
+  maker.className = "small";
+  maker.textContent = plane.maker + " · First flight: " + plane.year;
+
+  const description = document.createElement("p");
+  description.textContent = plane.description;
+
+  const actions = document.createElement("div");
+  actions.className = "card-actions";
+
+  const favorite = document.createElement("button");
+  function updateFavoriteLabel() {
+    favorite.textContent = favorites.has(plane.name) ? "★ Saved" : "☆ Favorite";
+  }
+  updateFavoriteLabel();
+
+  favorite.addEventListener("click", () => {
+    if (favorites.has(plane.name)) favorites.delete(plane.name);
+    else favorites.add(plane.name);
+    saveFavorites();
+    updateFavoriteLabel();
+    renderAircraft();
+  });
+
+  const wiki = document.createElement("a");
+  wiki.className = "btn";
+  wiki.href = "https://en.wikipedia.org/wiki/" + encodeURIComponent(plane.wiki);
+  wiki.target = "_blank";
+  wiki.rel = "noopener noreferrer";
+  wiki.textContent = "Read more ↗";
+
+  actions.append(favorite, wiki);
+  content.append(tag, title, maker, description, actions);
+  card.appendChild(content);
+
+  image.addEventListener("error", () => {
+    image.hidden = true;
+    fallback.hidden = false;
+  });
+
+  loadAircraftImage(plane, image);
+
+  return card;
+}
+
+async function loadAircraftImage(plane, image) {
+  if (imageCache.has(plane.wiki)) {
+    const cached = imageCache.get(plane.wiki);
+    if (cached) image.src = cached;
+    else {
+      image.hidden = true;
+      image.nextElementSibling.hidden = false;
+    }
+    return;
+  }
+
+  try {
+    const endpoint = "https://en.wikipedia.org/api/rest_v1/page/summary/" +
+      encodeURIComponent(plane.wiki);
+    const response = await fetch(endpoint);
+    if (!response.ok) throw new Error("Image unavailable");
+
+    const data = await response.json();
+    const source = data.thumbnail && data.thumbnail.source;
+
+    imageCache.set(plane.wiki, source || null);
+
+    if (source) image.src = source;
+    else {
+      image.hidden = true;
+      image.nextElementSibling.hidden = false;
+    }
+  } catch (error) {
+    imageCache.set(plane.wiki, null);
+    image.hidden = true;
+    image.nextElementSibling.hidden = false;
+  }
+}
+
+function renderAircraft() {
+  const query = searchInput.value.trim().toLowerCase();
+  const category = categoryFilter.value;
+  const matches = aircraft.filter(plane => {
+    const matchesSearch =
+      (plane.name + " " + plane.maker + " " + plane.description)
+        .toLowerCase().includes(query);
+    const matchesCategory = category === "All" || plane.category === category;
+    const matchesFavorite = !onlyFavorites || favorites.has(plane.name);
+    return matchesSearch && matchesCategory && matchesFavorite;
+  });
+
+  grid.replaceChildren();
+  matches.forEach(plane => grid.appendChild(createAircraftCard(plane)));
+
+  document.getElementById("resultsCount").textContent =
+    "Showing " + matches.length + " of " + aircraft.length + " aircraft.";
+  favoritesButton.textContent = onlyFavorites ? "★ Show all aircraft" : "☆ Favorites only";
+}
+
+searchInput.addEventListener("input", renderAircraft);
+categoryFilter.addEventListener("change", renderAircraft);
+favoritesButton.addEventListener("click", () => {
+  onlyFavorites = !onlyFavorites;
+  renderAircraft();
+});
+renderAircraft();
+
+// ================================
+// DARK / LIGHT MODE
+// ================================
+const themeToggle = document.getElementById("themeToggle");
+themeToggle.addEventListener("click", () => {
+  document.body.classList.toggle("light");
+  try {
+    localStorage.setItem(
+      "aeroworld-theme",
+      document.body.classList.contains("light") ? "light" : "dark"
+    );
+  } catch (error) {}
+});
+
+try {
+  if (localStorage.getItem("aeroworld-theme") === "light") {
+    document.body.classList.add("light");
+  }
+} catch (error) {}
+
+// ================================
+// INTERACTIVE COCKPIT
+// ================================
+const cockpitLessons = {
+  airspeed: {
+    title:"Airspeed Indicator",
+    text:"Indicated airspeed is derived from pitot and static pressure. It helps pilots monitor speed relative to the air and respect the aircraft's operating limits."
+  },
+  altimeter: {
+    title:"Altimeter",
+    text:"The altimeter uses atmospheric pressure to indicate altitude relative to a selected pressure setting. Correct settings are important for safe vertical separation."
+  },
+  attitude: {
+    title:"Attitude Indicator",
+    text:"This instrument shows pitch and bank relative to a reference horizon. It helps pilots understand the aircraft's orientation."
+  },
+  heading: {
+    title:"Heading Indicator",
+    text:"The heading indicator shows the direction the aircraft's nose points. Heading is not necessarily the same as its track over the ground because of wind."
+  },
+  vertical: {
+    title:"Vertical Speed Indicator",
+    text:"The vertical speed indicator displays the rate of climb or descent, often in feet per minute. It is interpreted together with other flight information."
+  },
+  engine: {
+    title:"Engine Instruments",
+    text:"Engine displays vary by aircraft and can include rotational speed, temperature, fuel quantity, oil pressure and other operating parameters."
+  }
+};
+
+document.querySelectorAll(".cockpit-btn").forEach(button => {
+  button.addEventListener("click", () => {
+    const lesson = cockpitLessons[button.dataset.instrument];
+    document.getElementById("cockpitTitle").textContent = lesson.title;
+    document.getElementById("cockpitInfo").textContent = lesson.text;
+  });
+});
+
+// ================================
+// AIRCRAFT ENGINEERING LAB
+// ================================
+const engineeringLessons = {
+  engine:{
+    title:"🌪️ Jet Engines",
+    text:"A turbofan draws air through a fan, compresses air in the core, adds energy through combustion and extracts energy with turbines. The fan and exhaust produce thrust. Aircraft engines differ in design and operating characteristics."
+  },
+  wing:{
+    title:"🪽 Wings",
+    text:"Wings generate aerodynamic lift as air flows around them. Wing area, air density, airspeed, angle of attack and wing design affect lift. Flaps and slats can change the wing's lift characteristics for particular phases of flight."
+  },
+  gear:{
+    title:"🛞 Landing Gear",
+    text:"Landing gear supports the aircraft on the ground and absorbs loads during landing and taxiing. Many airliners retract their gear in flight to reduce drag. Gear systems include wheels, brakes and shock-absorbing components."
+  },
+  controls:{
+    title:"🎮 Flight Controls",
+    text:"Ailerons primarily control roll, elevators control pitch and rudders control yaw in conventional aircraft. Spoilers can reduce lift and increase drag. Fly-by-wire systems use electronic signals and computers to control actuators."
+  },
+  fuel:{
+    title:"⛽ Fuel System",
+    text:"Fuel tanks store fuel, while pumps, valves and feed lines deliver it to the engines. System design varies with the aircraft and can include fuel transfer, quantity monitoring and protections against unsafe conditions."
+  },
+  hydraulic:{
+    title:"🔧 Hydraulic Systems",
+    text:"Hydraulic systems transmit force using pressurized fluid. Depending on the aircraft design, they may power landing gear, wheel brakes and flight-control actuators. Aircraft also use other technologies, including electrical and mechanical systems."
+  }
+};
+
+document.querySelectorAll(".engineering-btn").forEach(button => {
+  button.addEventListener("click", () => {
+    const lesson = engineeringLessons[button.dataset.system];
+    document.getElementById("engineeringTitle").textContent = lesson.title;
+    document.getElementById("engineeringInfo").textContent = lesson.text;
+  });
+});
+
+// ================================
+// AIRLINE OPERATIONS JOURNEY
+// ================================
+const operationStages = [
+  {
+    title:"Flight Planning",
+    text:"The flight crew and dispatch team consider the route, weather, fuel requirements, aircraft performance, airport conditions, alternate airports and applicable operational restrictions."
+  },
+  {
+    title:"Pre-flight Preparation",
+    text:"The crew reviews operational information and aircraft status. Required inspections, checklists, loading information and safety checks are completed in accordance with approved procedures."
+  },
+  {
+    title:"Taxi",
+    text:"The aircraft moves between its parking stand and runway using assigned taxi routes and ground-control instructions. The crew monitors the surroundings and follows airport procedures."
+  },
+  {
+    title:"Take-off",
+    text:"The aircraft accelerates along the runway and climbs after becoming airborne. The crew follows the aircraft's approved procedures and air traffic clearances."
+  },
+  {
+    title:"Cruise",
+    text:"The aircraft follows its planned route at a suitable altitude. The crew monitors navigation, weather, aircraft systems, fuel and air traffic instructions."
+  },
+  {
+    title:"Descent and Approach",
+    text:"The aircraft descends and prepares for arrival. The crew considers weather, traffic, approach procedures, aircraft configuration and landing performance."
+  },
+  {
+    title:"Landing",
+    text:"The aircraft follows the approach path, touches down on the runway and decelerates using the available approved systems and procedures."
+  },
+  {
+    title:"Post-flight",
+    text:"After reaching the stand, the crew completes required checks and records, reports technical issues and prepares the aircraft for its next operation."
+  }
+];
+
+let operationIndex = 0;
+
+function showOperationStage() {
+  const stage = operationStages[operationIndex];
+  document.getElementById("operationNumber").textContent =
+    "STAGE " + (operationIndex + 1) + " OF " + operationStages.length;
+  document.getElementById("operationTitle").textContent = stage.title;
+  document.getElementById("operationInfo").textContent = stage.text;
+  document.getElementById("previousStage").disabled = operationIndex === 0;
+  document.getElementById("nextStage").disabled =
+    operationIndex === operationStages.length - 1;
+}
+
+document.querySelectorAll(".operation-btn").forEach(button => {
+  button.addEventListener("click", () => {
+    operationIndex = Number(button.dataset.stage);
+    showOperationStage();
+  });
+});
+
+document.getElementById("previousStage").addEventListener("click", () => {
+  if (operationIndex > 0) operationIndex--;
+  showOperationStage();
+});
+
+document.getElementById("nextStage").addEventListener("click", () => {
+  if (operationIndex < operationStages.length - 1) operationIndex++;
+  showOperationStage();
+});
+
+showOperationStage();
+
+// ================================
+// AVIATION QUIZ
+// ================================
+const questions = [
+  {
+    q:"Which force opposes an aircraft's motion through the air?",
+    options:["Lift","Drag","Thrust","Weight"],
+    answer:1,
+    explain:"Drag is aerodynamic resistance that opposes motion through the air."
+  },
+  {
+    q:"Which aircraft is famous for being the world's largest passenger airliner?",
+    options:["Airbus A380","Boeing 737","Cessna 172","Concorde"],
+    answer:0,
+    explain:"The Airbus A380 is a very large passenger aircraft with two full passenger decks."
+  },
+  {
+    q:"What is the primary function of an aircraft's ailerons?",
+    options:["Control roll","Control cabin temperature","Increase fuel capacity","Deploy landing gear"],
+    answer:0,
+    explain:"Ailerons primarily control roll by changing lift on opposite wings."
+  },
+  {
+    q:"What does an altimeter indicate?",
+    options:["Fuel flow","Altitude","Engine thrust","Outside noise"],
+    answer:1,
+    explain:"An altimeter indicates altitude based on atmospheric pressure and its selected setting."
+  },
+  {
+    q:"Which propulsion system is common on modern large airliners?",
+    options:["Steam engine","Turbofan","Sail","Electric bicycle motor"],
+    answer:1,
+    explain:"Modern large airliners commonly use turbofan engines."
+  },
+  {
+    q:"What does a stall mean aerodynamically?",
+    options:["The aircraft runs out of fuel","The wing exceeds its critical angle of attack","The landing gear retracts","The aircraft turns off its lights"],
+    answer:1,
+    explain:"A stall occurs when the wing exceeds its critical angle of attack."
+  },
+  {
+    q:"Which instrument helps show an aircraft's pitch and bank?",
+    options:["Attitude indicator","Fuel gauge","Clock","Cabin temperature display"],
+    answer:0,
+    explain:"The attitude indicator shows the aircraft's orientation relative to a reference horizon."
+  },
+  {
+    q:"What is the main purpose of landing gear?",
+    options:["Navigate by satellite","Support the aircraft on the ground","Generate cabin oxygen","Measure cloud height"],
+    answer:1,
+    explain:"Landing gear supports the aircraft on the ground and absorbs landing and taxiing loads."
+  },
+  {
+    q:"Which aircraft is known for its flying-wing stealth design?",
+    options:["Northrop Grumman B-2 Spirit","Airbus A320","ATR 72","Cessna 172"],
+    answer:0,
+    explain:"The B-2 Spirit is a well-known flying-wing stealth bomber."
+  },
+  {
+    q:"Why is aircraft weight and balance important?",
+    options:["Only for the paint colour","It affects stability, control and performance","It changes the airline logo","It replaces flight planning"],
+    answer:1,
+    explain:"Aircraft mass and centre of gravity affect performance, stability and controllability."
+  }
+];
+
+let quizIndex = 0;
+let quizPoints = 0;
+let answered = false;
+
+const questionEl = document.getElementById("quizQuestion");
+const optionsEl = document.getElementById("quizOptions");
+const feedbackEl = document.getElementById("quizFeedback");
+const nextQuizButton = document.getElementById("quizNext");
+const restartQuizButton = document.getElementById("quizRestart");
+
+function showQuestion() {
+  answered = false;
+  const question = questions[quizIndex];
+  document.getElementById("quizProgress").textContent =
+    "QUESTION " + (quizIndex + 1) + " OF " + questions.length;
+  document.getElementById("quizScore").textContent = "Score: " + quizPoints;
+  questionEl.textContent = question.q;
+  feedbackEl.textContent = "";
+  optionsEl.replaceChildren();
+  nextQuizButton.disabled = true;
+  nextQuizButton.textContent = quizIndex === questions.length - 1
+    ? "See Results →"
+    : "Next Question →";
+
+  question.options.forEach((option, index) => {
+    const button = document.createElement("button");
+    button.className = "quiz-option";
+    button.textContent = String.fromCharCode(65 + index) + ". " + option;
+    button.addEventListener("click", () => chooseAnswer(index, button));
+    optionsEl.appendChild(button);
+  });
+}
+
+function chooseAnswer(selected, selectedButton) {
+  if (answered) return;
+  answered = true;
+  const question = questions[quizIndex];
+  const buttons = [...optionsEl.querySelectorAll("button")];
+
+  buttons.forEach((button, index) => {
+    button.disabled = true;
+    if (index === question.answer) button.classList.add("correct");
+  });
+
+  if (selected === question.answer) {
+    quizPoints++;
+    feedbackEl.textContent = "✅ Correct! " + question.explain;
+  } else {
+    selectedButton.classList.add("wrong");
+    feedbackEl.textContent = "❌ Not quite. " + question.explain;
+  }
+
+  document.getElementById("quizScore").textContent = "Score: " + quizPoints;
+  nextQuizButton.disabled = false;
+}
+
+nextQuizButton.addEventListener("click", () => {
+  if (!answered) return;
+
+  if (quizIndex < questions.length - 1) {
+    quizIndex++;
+    showQuestion();
+  } else {
+    questionEl.textContent = "Mission complete!";
+    optionsEl.replaceChildren();
+    document.getElementById("quizProgress").textContent = "QUIZ COMPLETED";
+    feedbackEl.textContent =
+      "Your score: " + quizPoints + " / " + questions.length +
+      ". " + (quizPoints >= 8
+        ? "Excellent flying knowledge, pilot! ✈️"
+        : "Good effort! Review the academy and try again.");
+    nextQuizButton.hidden = true;
+    restartQuizButton.hidden = false;
+  }
+});
+
+restartQuizButton.addEventListener("click", () => {
+  quizIndex = 0;
+  quizPoints = 0;
+  nextQuizButton.hidden = false;
+  restartQuizButton.hidden = true;
+  showQuestion();
+});
+
+showQuestion();
+</script>
+</body>
+</html>
